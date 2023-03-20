@@ -2,7 +2,7 @@
 class Game
 {
 public:
-	void Init();
+	void Init(const WindowInfo& _window);
 	void Update();
 };
 
