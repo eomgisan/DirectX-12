@@ -1,58 +1,90 @@
 #include "pch.h"
 #include "Engine.h"
-#include "Device.h"
-#include "SwapChain.h"
-#include "DescriptorHeap.h"
-#include "CommandQueue.h"
 
-
-
-void Engine::Init(const WindowInfo& _window)
+void Engine::Init(const WindowInfo& info)
 {
-	m_window = _window;
-
-	ResizeWindow(m_window.width, m_window.height);
+	_window = info;	
 
 	// 그려질 화면 크기를 설정
-	m_viewprot = { 0,0,static_cast<FLOAT>(_window.width), static_cast<FLOAT>(_window.height), 0.0f, 1.0f };
-	m_scissorRect = CD3DX12_RECT(0, 0, _window.width, _window.height);
+	_viewport = { 0, 0, static_cast<FLOAT>(info.width), static_cast<FLOAT>(info.height), 0.0f, 1.0f };
+	_scissorRect = CD3DX12_RECT(0, 0, info.width, info.height);
 
 
-	m_device	= make_shared<Device>();
-	m_cmdQueue	= make_shared<CommandQueue>();
-	m_swapChain	= make_shared<SwapChain>();
-	m_descHeap	= make_shared<DescriptorHeap>();
+	//---------------------------------------
+	//포인터생성 ( 동적할당으로 만드는 과정 )
+	//---------------------------------------
+	_device = make_shared<Device>();
+	_cmdQueue = make_shared<CommandQueue>();
+	_swapChain = make_shared<SwapChain>();
+	_rootSignature = make_shared<RootSignature>();
+	_cb = make_shared<ConstantBuffer>();
+	_tableDescHeap = make_shared<TableDescriptorHeap>();
+	_depthStencilBuffer = make_shared<DepthStencilBuffer>();
 
-	m_device->Init();
-	m_cmdQueue->Init(m_device->GetDevice(), m_swapChain, m_descHeap);
-	m_swapChain->Init(m_window, m_device->GetDXGI(), m_cmdQueue->GetCmdQueue());
-	m_descHeap->Init(m_device->GetDevice(), m_swapChain);
+
+	_input = make_shared<Input>();
+	_timer = make_shared<Timer>();
+
+	//------
+	//초기화
+	//------
+	_device->Init();
+	_cmdQueue->Init(_device->GetDevice(), _swapChain);
+	_swapChain->Init(info, _device->GetDevice(), _device->GetDXGI(), _cmdQueue->GetCmdQueue());
+	_rootSignature->Init();
+	_cb->Init(sizeof(Transform), 256);
+	_tableDescHeap->Init(256);
+	_depthStencilBuffer->Init(_window);
+
+	_input->Init(info.hwnd);
+	_timer->Init();
+
+	ResizeWindow(info.width, info.height);
 }
 
 void Engine::Render()
 {
 	RenderBegin();
 
-		// TODO : 나머지 물체들 그려준다.
+	// TODO : 나머지 물체들 그려준다
 
 	RenderEnd();
 }
 
-void Engine::ResizeWindow(int32 _width, int32 _height)
+void Engine::Update()
 {
-	m_window.width = _width;
-	m_window.height = _height;
-	RECT rect = { 0, 0, _width, _height };
-	::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
-	::SetWindowPos(m_window.hwnd, 0, 100, 100, _width, _height, 0);
+	_input->Update();
+	_timer->Update();
+	ShowFPS();
 }
 
 void Engine::RenderBegin()
 {
-	m_cmdQueue->RenderBegin(&m_viewprot, &m_scissorRect);
+	_cmdQueue->RenderBegin(&_viewport, &_scissorRect);
 }
 
 void Engine::RenderEnd()
 {
-	m_cmdQueue->RenderEnd();
+	_cmdQueue->RenderEnd();
+}
+
+void Engine::ResizeWindow(int32 width, int32 height)
+{
+	_window.width = width;
+	_window.height = height;
+
+	RECT rect = { 0, 0, width, height };
+	::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
+	::SetWindowPos(_window.hwnd, 0, 100, 100, width, height, 0);
+
+	_depthStencilBuffer->Init(_window);
+}
+
+void Engine::ShowFPS()
+{
+	uint32 fps = FPS;
+	WCHAR text[100] = L"";
+	::wsprintf(text, L"FPS : %d", fps);
+
+	::SetWindowText(_window.hwnd, text);
 }
