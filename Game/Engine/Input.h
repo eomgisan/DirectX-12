@@ -10,8 +10,6 @@ enum class KEY_TYPE {
 	Z = 'Z', X = 'X', C = 'C', V = 'V', B = 'V',
 
 
-
-	LAST,			// ³¡
 };
 
 
@@ -26,7 +24,7 @@ enum class KEY_STATE {
 
 
 enum {
-	KEY_TYPE_COUNT = static_cast<uint32>(KEY_TYPE::LAST),
+	KEY_TYPE_COUNT = static_cast<uint32>(UINT8_MAX + 1),
 	KEY_STATE_COUNT = static_cast<uint32>(KEY_STATE::LAST),
 };
 
