@@ -44,8 +44,8 @@ void Game::Init(const WindowInfo& info)
 	shared_ptr<Material> material = make_shared<Material>();
 	
 	material->SetShader(shader);
-	material->SetFloat(0, 100.0f);
-	material->SetFloat(1, 20.0f);
+	material->SetFloat(0, 0.3f);
+	material->SetFloat(1, 0.4f);
 	material->SetFloat(2, 0.3f);
 	material->SetTexture(0, texture);
 

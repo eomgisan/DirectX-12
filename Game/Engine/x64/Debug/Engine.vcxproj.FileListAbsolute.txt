@@ -1,2 +1,4 @@
 C:\Users\yongh\OneDrive\바탕 화면\dx12\Depth Stencil View_소스코드\Output\Engine.pdb
 C:\Users\yongh\OneDrive\바탕 화면\dx12\Depth Stencil View_소스코드\Engine\x64\Debug\Engine.pdb
+C:\Users\yongh\OneDrive\바탕 화면\DirectX12\Game\Output\Engine.pdb
+C:\Users\yongh\OneDrive\바탕 화면\DirectX12\Game\Engine\x64\Debug\Engine.pdb

@@ -18,7 +18,7 @@ struct MaterialParams
 	// array는 진짜걍 intParams[10] 과 같은 고정 배열임
 	// 하지만 자동으로 범위검사 즉 intParams[111] 과 같은 짓을 안하게 해줌
 	array<int32, MATERIAL_INT_COUNT> intParams;
-	array<int32, MATERIAL_FLOAT_COUNT> floatParams;
+	array<float, MATERIAL_FLOAT_COUNT> floatParams;
 };
 
 

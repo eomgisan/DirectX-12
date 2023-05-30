@@ -4,7 +4,7 @@ cbuffer TEST_B0 : register(b0)
     float4 offset0;
 };
 
-cbuffer TEST_B1 : register(b1)
+cbuffer MATERIAL_PARAMS : register(b1)
 {
     int int_0;
     int int_1;
