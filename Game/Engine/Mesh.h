@@ -1,6 +1,6 @@
 #pragma once
 
-class Texture;
+class Material;
 
 // [유니티짱]과 같이 정점으로 이루어진 물체
 class Mesh
@@ -9,8 +9,8 @@ public:
 	void Init(const vector<Vertex>& vertexBuffer, const vector<uint32>& indexbuffer);
 	void Render();
 
-	void SetTransform(const Transform& t) { _transform = t; }
-	void SetTexture(shared_ptr<Texture> tex) { _tex = tex; }
+	inline void SetTransform(const Transform& t) { _transform = t; }
+	inline void SetMaterial(shared_ptr<Material> mat) { _mat = mat; }
 
 private:
 	void CreateVertexBuffer(const vector<Vertex>& buffer);
@@ -26,6 +26,6 @@ private:
 	uint32 _indexCount = 0;
 
 	Transform _transform = {};
-	shared_ptr<Texture> _tex = {};
+	shared_ptr<Material> _mat = {};
 };
 

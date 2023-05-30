@@ -19,11 +19,12 @@ ConstantBuffer::~ConstantBuffer()
 
 
 
-void ConstantBuffer::Init(uint32 size, uint32 count)
+void ConstantBuffer::Init(CBV_REGISTER reg, uint32 size, uint32 count)
 {
-	// 상수 버퍼는 256 바이트 배수로 만들어야 한다
+	_reg = reg;
+	// 상수 버퍼는 256 바이트 배수의 크기로 만들어야 한다
 	// 0 256 512 768
-	_elementSize = (size + 255) & ~255;
+	_elementSize = ((size + 255) & ~255);
 	_elementCount = count;
 
 	CreateBuffer();
@@ -77,17 +78,20 @@ void ConstantBuffer::Clear()
 	_currentIndex = 0;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE ConstantBuffer::PushData(int32 rootParamIndex, void* buffer, uint32 size)
+// void* 로 인자를 받는이유 : 어떠한 형식의 데이터도 모두 이 함수로 받기위함
+// 그러니깐 size를 받는거임 ㅇㅇ void 형식은 크기를 모르니깐
+void ConstantBuffer::PushData(void* buffer, uint32 size)
 {
-	assert(_currentIndex < _elementSize);
+	assert(_elementSize == ((size + 255) & ~255));
+	assert(_currentIndex < _elementCount);
 
 	::memcpy(&_mappedBuffer[_currentIndex * _elementSize], buffer, size);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = GetCpuHandle(_currentIndex);
 	
-	_currentIndex++;
+	GEngine->GetTableDescHeap()->SetCBV(cpuHandle, _reg);
 
-	return cpuHandle;
+	_currentIndex++;
 }
 
 D3D12_GPU_VIRTUAL_ADDRESS ConstantBuffer::GetGpuVirtualAddress(uint32 index)

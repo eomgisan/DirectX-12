@@ -4,12 +4,14 @@
 #include "CommandQueue.h"
 #include "SwapChain.h"
 #include "RootSignature.h"
-#include "Mesh.h"
-#include "Shader.h"
-#include "ConstantBuffer.h"
 #include "TableDescriptorHeap.h"
 #include "Texture.h"
 #include "DepthStencilBuffer.h"
+#include "ConstantBuffer.h"
+
+#include "Mesh.h"
+#include "Shader.h"
+
 
 #include "Input.h"
 #include "Timer.h"
@@ -29,7 +31,7 @@ public:
 	inline shared_ptr<CommandQueue> GetCmdQueue() { return _cmdQueue; }
 	inline shared_ptr<SwapChain> GetSwapChain() { return _swapChain; }
 	inline shared_ptr<RootSignature> GetRootSignature() { return _rootSignature; }
-	inline shared_ptr<ConstantBuffer> GetCB() { return _cb; }
+	inline shared_ptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type) { return _constantBuffers[static_cast<uint8>(type)]; }
 	inline shared_ptr<TableDescriptorHeap> GetTableDescHeap() { return _tableDescHeap; }
 	inline shared_ptr<DepthStencilBuffer> GetDepthStencilBuffer() { return _depthStencilBuffer; }
 
@@ -45,6 +47,7 @@ public:
 
 private:
 	void ShowFPS();
+	void CreateConstantBuffer(CBV_REGISTER reg, uint32 buffersize, uint32 count);
 
 
 private:
@@ -57,9 +60,9 @@ private:
 	shared_ptr<CommandQueue> _cmdQueue;
 	shared_ptr<SwapChain> _swapChain;
 	shared_ptr<RootSignature> _rootSignature;
-	shared_ptr<ConstantBuffer> _cb;
 	shared_ptr<TableDescriptorHeap> _tableDescHeap;
 	shared_ptr<DepthStencilBuffer> _depthStencilBuffer;
+	vector<shared_ptr<ConstantBuffer>> _constantBuffers;
 
 
 	shared_ptr<Input> _input;
